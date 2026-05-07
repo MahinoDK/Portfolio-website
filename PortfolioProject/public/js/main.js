@@ -3,14 +3,51 @@ const videoFrame = document.getElementById("videoFrame");
 const closeVideo = document.getElementById("closeVideo");
 
 
-async function loadLaboratoryProjects() {
-  try {
-    const response = await fetch("/api/laboratory");
-    const projects = await response.json();
+function loadLaboratoryProjects() {
+ const projects = [
+    {
+      title: "AR Game",
+      tag: "Lens Studio",
+      image: "Images/ARGame.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+    {
+      title: "Egypt Dungeon Crawler",
+      tag: "Unity",
+      image: "Images/EgyptGame.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+    {
+      title: "Fridge Buddies",
+      tag: "Unity",
+      image: "Images/Fridgebuddies.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+    {
+      title: "Ghost Game",
+      tag: "Unity",
+      image: "Images/GhostGame.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+    {
+      title: "Minecraft Project",
+      tag: "Unity",
+      image: "Images/MinecraftGame.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+    {
+      title: "Slender Remake",
+      tag: "Unity",
+      image: "Images/SlenderGame.png",
+      video: "https://www.youtube.com/embed/QH2-TGUlwu4"
+    },
+  ];
 
-    const track = document.querySelector(".lab-track");
-    track.innerHTML = "";
+  const track = document.querySelector(".lab-track");
+  track.innerHTML = "";
 
+  // Build cards TWICE — this is intentional for the infinite scroll animation
+  [0, 1].forEach(() => {
     projects.forEach((project) => {
       const card = document.createElement("article");
       card.classList.add("lab-card");
@@ -22,7 +59,6 @@ async function loadLaboratoryProjects() {
         <h3>${project.title}</h3>
       `;
 
-      // click event (video overlay)
       card.addEventListener("click", () => {
         videoFrame.src = project.video;
         videoOverlay.classList.add("active");
@@ -30,32 +66,8 @@ async function loadLaboratoryProjects() {
 
       track.appendChild(card);
     });
-
-    
-    projects.forEach((project) => {
-      const card = document.createElement("article");
-      card.classList.add("lab-card");
-      card.dataset.video = project.video;
-
-      card.innerHTML = `
-        <div class="lab-tag">${project.tag}</div>
-        <img src="${project.image}" alt="${project.title}">
-        <h3>${project.title}</h3>
-      `;
-
-      card.addEventListener("click", () => {
-        videoFrame.src = project.video;
-        videoOverlay.classList.add("active");
-      });
-
-      track.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error("Failed to load projects:", error);
-  }
+  });
 }
-
 
 function closeVideoOverlay() {
   videoOverlay.classList.remove("active");
@@ -76,44 +88,6 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-
-function loadAbout(section, event) {
-  const container = document.getElementById("about-content");
-
-  container.style.opacity = 0;
-
-  setTimeout(() => {
-    fetch("./about/" + section + ".html")
-      .then(res => {
-        if (!res.ok) throw new Error("404");
-        return res.text();
-      })
-      .then(data => {
-        container.innerHTML = data;
-        container.style.opacity = 1;
-
-        if (event) {
-          document.querySelectorAll(".about-btn").forEach(btn => {
-            btn.classList.remove("active");
-          });
-
-          event.target.classList.add("active");
-        }
-      })
-      .catch(() => {
-        container.innerHTML = "<p>Failed to load content.</p>";
-        container.style.opacity = 1;
-      });
-  }, 150);
-}
-
 window.addEventListener("DOMContentLoaded", () => {
-  loadLaboratoryProjects(); 
-
-  const firstBtn = document.querySelector(".about-btn");
-  if (firstBtn) {
-    firstBtn.classList.add("active");
-  }
-
-  loadAbout("mahino");
+  loadLaboratoryProjects();
 });
